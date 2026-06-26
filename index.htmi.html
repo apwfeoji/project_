@@ -1,0 +1,307 @@
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: var(--font-sans, sans-serif); }
+.app { padding: 1rem 0; display: flex; flex-direction: column; align-items: center; gap: 16px; }
+.app-rel { position: relative; display: flex; flex-direction: column; align-items: center; gap: 16px; }
+
+.card {
+  width: 480px; height: 360px;
+  background: #fff; border: 1px solid #d8e8dc;
+  border-radius: 14px; overflow: hidden; display: flex; flex-shrink: 0;
+}
+.left {
+  width: 140px; flex-shrink: 0;
+  display: flex; flex-direction: column; align-items: center;
+  padding: 20px 14px 16px; border-right: 1px solid #f0f4f1; gap: 10px;
+}
+.photo-wrap {
+  width: 112px; height: 168px; border-radius: 8px;
+  border: 1.5px solid #b8dfc4; background: #f4fbf6;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 7px; color: #8dc8a0; font-size: 10px; cursor: pointer; overflow: hidden; position: relative;
+}
+.photo-wrap i { font-size: 32px; color: #8dc8a0; }
+.photo-wrap img { width: 100%; height: 100%; object-fit: cover; position: absolute; inset: 0; }
+#photoInput { display: none; }
+
+.right { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+.r-header { padding: 16px 18px 10px; border-bottom: 1px solid #f0f4f1; }
+.eyebrow { font-size: 8px; letter-spacing: 0.16em; color: #6dbf82; text-transform: uppercase; font-weight: 500; margin-bottom: 2px; }
+.ptitle { font-size: 18px; font-weight: 500; color: #1a2e22; letter-spacing: 0.01em; }
+.subtitle { font-size: 11px; color: #999; margin-top: 1px; }
+.ybar { height: 2px; background: #f0c940; width: 40px; border-radius: 2px; margin-top: 7px; }
+
+.r-body { flex: 1; padding: 11px 18px 0; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.slabel { font-size: 8px; letter-spacing: 0.12em; text-transform: uppercase; color: #aaa; font-weight: 500; margin-bottom: 4px; }
+.fkey { font-size: 8px; color: #bbb; text-transform: uppercase; letter-spacing: 0.07em; margin-bottom: 2px; display: block; }
+.field { display: flex; flex-direction: column; }
+.info-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 6px; }
+
+input.fval {
+  background: #f9fafb; border: 1px solid #eee; border-radius: 5px;
+  padding: 4px 7px; font-size: 11px; color: #1a2e22; min-height: 26px;
+  width: 100%; outline: none; font-family: inherit;
+}
+input.fval::placeholder { color: #ccc; font-style: italic; }
+input.fval:focus { border-color: #b8dfc4; }
+
+.two-col { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 10px; }
+.tarea-wrap { display: flex; flex-direction: column; }
+
+textarea.tarea {
+  background: #f9fafb; border: 1px solid #eee; border-radius: 6px;
+  padding: 6px 8px; font-size: 10px; color: #1a2e22;
+  line-height: 1.5; height: 46px; resize: none; width: 100%;
+  outline: none; font-family: inherit;
+}
+textarea.tarea::placeholder { color: #ccc; font-style: italic; }
+textarea.tarea.green { border-left: 2.5px solid #6dbf82; }
+textarea.tarea.green:focus { border-color: #6dbf82; }
+textarea.tarea.yellow { border-left: 2.5px solid #f0c940; }
+textarea.tarea.yellow:focus { border-color: #f0c940; border-left-color: #f0c940; }
+
+.code-area { display: flex; align-items: center; gap: 6px; margin-top: 5px; }
+.code-pill {
+  display: inline-flex; align-items: center; gap: 5px;
+  border: 1px solid #b8dfc4; border-radius: 20px;
+  padding: 3px 9px; font-size: 10px; color: #3b7a52;
+  font-family: var(--font-mono, monospace); font-weight: 500; letter-spacing: 0.05em;
+}
+.code-dot { width: 5px; height: 5px; border-radius: 50%; background: #6dbf82; flex-shrink: 0; }
+.type-badge {
+  font-size: 9px; background: #fef6dc; border: 1px solid #f0c940;
+  color: #7a5a00; border-radius: 4px; padding: 2px 8px; font-weight: 500;
+}
+.r-footer {
+  border-top: 1px solid #f0f4f1; padding: 7px 18px;
+  display: flex; align-items: center; justify-content: space-between; margin-top: 10px;
+}
+.status { display: flex; align-items: center; gap: 5px; font-size: 9px; color: #6dbf82; font-weight: 500; }
+.sdot { width: 5px; height: 5px; border-radius: 50%; background: #6dbf82; }
+.fright { font-size: 8px; color: #ccc; font-family: var(--font-mono, monospace); letter-spacing: 0.05em; }
+
+.controls { width: 480px; display: flex; gap: 8px; }
+.btn {
+  flex: 1; padding: 9px 0; border-radius: 8px; border: 1px solid #d8e8dc;
+  background: #fff; font-size: 12px; color: #2d6a3f; cursor: pointer;
+  font-family: inherit; display: flex; align-items: center; justify-content: center; gap: 6px;
+}
+.btn:hover { background: #f4fbf6; }
+.btn.primary { background: #e8f5ec; border-color: #b8dfc4; font-weight: 500; }
+.btn.primary:hover { background: #d0ead8; }
+
+.link-box {
+  width: 480px; background: #f9fafb; border: 1px solid #eee;
+  border-radius: 8px; padding: 10px 14px;
+  flex-direction: column; gap: 6px; display: none;
+}
+.link-box.visible { display: flex; }
+.link-label { font-size: 9px; color: #aaa; text-transform: uppercase; letter-spacing: 0.1em; }
+.link-row { display: flex; gap: 8px; align-items: center; }
+.link-url {
+  flex: 1; background: #fff; border: 1px solid #eee; border-radius: 6px;
+  padding: 5px 9px; font-size: 10px; color: #3b7a52;
+  font-family: var(--font-mono, monospace); overflow: hidden;
+  text-overflow: ellipsis; white-space: nowrap; word-break: break-all;
+}
+.copy-btn {
+  padding: 5px 12px; border-radius: 6px; border: 1px solid #b8dfc4;
+  background: #e8f5ec; font-size: 11px; color: #2d6a3f; cursor: pointer; font-family: inherit; white-space: nowrap;
+}
+.copy-btn:hover { background: #d0ead8; }
+.copy-btn.copied { background: #f0c940; border-color: #d4a017; color: #7a5a00; }
+
+.link-note { font-size: 9px; color: #bbb; line-height: 1.5; }
+
+.toast {
+  position: absolute; bottom: -36px; left: 50%; transform: translateX(-50%);
+  background: #1a2e22; color: #fff; border-radius: 8px;
+  padding: 7px 16px; font-size: 11px; opacity: 0;
+  transition: opacity 0.2s; pointer-events: none; white-space: nowrap;
+}
+.toast.show { opacity: 1; }
+</style>
+
+<h2 class="sr-only">PROJECT PARITY 실험체 등록증 — 입력 및 저장</h2>
+
+<div class="app">
+<div class="app-rel">
+
+  <div class="card" id="theCard">
+    <div class="left">
+      <div class="photo-wrap" id="photoWrap" onclick="document.getElementById('photoInput').click()">
+        <i class="ti ti-user" aria-hidden="true"></i>
+        <span style="font-size:10px;color:#8dc8a0;">사진 추가</span>
+      </div>
+      <input type="file" id="photoInput" accept="image/*">
+    </div>
+    <div class="right">
+      <div class="r-header">
+        <div class="eyebrow">classified · subject file</div>
+        <div class="ptitle">PROJECT PARITY</div>
+        <div class="subtitle">실험체 등록증</div>
+        <div class="ybar"></div>
+      </div>
+      <div class="r-body">
+        <div>
+          <div class="slabel">기본 정보</div>
+          <div class="info-grid">
+            <div class="field"><span class="fkey">이름</span><input class="fval" id="inp-name" type="text" placeholder="이름"></div>
+            <div class="field"><span class="fkey">나이</span><input class="fval" id="inp-age" type="text" placeholder="나이"></div>
+            <div class="field"><span class="fkey">성별</span><input class="fval" id="inp-gender" type="text" placeholder="성별"></div>
+          </div>
+        </div>
+        <div class="two-col">
+          <div class="tarea-wrap">
+            <div class="slabel">이능력</div>
+            <textarea class="tarea green" id="inp-ability" placeholder="이능력 입력"></textarea>
+            <div class="code-area">
+              <div class="code-pill"><span class="code-dot"></span><span id="codeDisplay">1·00000</span></div>
+              <div class="type-badge">실험체</div>
+            </div>
+          </div>
+          <div class="tarea-wrap">
+            <div class="slabel">신체 특이사항</div>
+            <textarea class="tarea yellow" id="inp-body" placeholder="신체 특이사항 입력"></textarea>
+          </div>
+        </div>
+      </div>
+      <div class="r-footer">
+        <div class="status"><span class="sdot"></span>관찰 중</div>
+        <div class="fright" id="footerDate">PPR · 2026 · REGISTERED</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="controls">
+    <button class="btn" onclick="document.getElementById('photoInput').click()">
+      <i class="ti ti-camera" aria-hidden="true"></i> 사진 업로드
+    </button>
+    <button class="btn primary" onclick="saveImage()">
+      <i class="ti ti-download" aria-hidden="true"></i> 이미지 저장
+    </button>
+    <button class="btn" onclick="generateLink()">
+      <i class="ti ti-link" aria-hidden="true"></i> 링크 생성
+    </button>
+  </div>
+
+  <div class="link-box" id="linkBox">
+    <div class="link-label">공유 링크 (데이터 인코딩)</div>
+    <div class="link-row">
+      <div class="link-url" id="linkUrl"></div>
+      <button class="copy-btn" id="copyBtn" onclick="copyLink()">복사</button>
+    </div>
+    <div class="link-note">이 링크를 열면 입력한 내용이 자동으로 채워진 등록증이 표시돼요. 사진은 링크에 포함되지 않아요.</div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+</div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+const code = '1·' + (Math.floor(10000 + Math.random() * 90000));
+document.getElementById('codeDisplay').textContent = code;
+
+const today = new Date();
+const dateStr = today.getFullYear() + '.' + String(today.getMonth()+1).padStart(2,'0') + '.' + String(today.getDate()).padStart(2,'0');
+document.getElementById('footerDate').textContent = 'PPR · ' + dateStr + ' · REGISTERED';
+
+document.getElementById('photoInput').addEventListener('change', function(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(ev) {
+    const wrap = document.getElementById('photoWrap');
+    let img = wrap.querySelector('img');
+    if (!img) { img = document.createElement('img'); wrap.appendChild(img); }
+    img.src = ev.target.result;
+    const icon = wrap.querySelector('i');
+    const hint = wrap.querySelector('span');
+    if (icon) icon.style.display = 'none';
+    if (hint) hint.style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+});
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2200);
+}
+
+function saveImage() {
+  const card = document.getElementById('theCard');
+  html2canvas(card, { scale: 2, useCORS: true, backgroundColor: '#ffffff', logging: false }).then(canvas => {
+    const a = document.createElement('a');
+    a.download = 'PPR_' + code.replace('·','') + '.png';
+    a.href = canvas.toDataURL('image/png');
+    a.click();
+    showToast('이미지가 저장됐어요');
+  }).catch(() => showToast('저장 중 오류가 발생했어요'));
+}
+
+function generateLink() {
+  const data = {
+    name: document.getElementById('inp-name').value,
+    age: document.getElementById('inp-age').value,
+    gender: document.getElementById('inp-gender').value,
+    ability: document.getElementById('inp-ability').value,
+    body: document.getElementById('inp-body').value,
+    code: code,
+    date: dateStr
+  };
+  const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(data))));
+  const link = 'https://claude.ai/artifacts?d=' + encoded;
+  document.getElementById('linkUrl').textContent = link;
+  document.getElementById('linkBox').classList.add('visible');
+}
+
+function copyLink() {
+  const url = document.getElementById('linkUrl').textContent;
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(url).then(() => {
+      const btn = document.getElementById('copyBtn');
+      btn.textContent = '복사됨!';
+      btn.classList.add('copied');
+      setTimeout(() => { btn.textContent = '복사'; btn.classList.remove('copied'); }, 2000);
+    }).catch(fallbackCopy);
+  } else { fallbackCopy(); }
+}
+
+function fallbackCopy() {
+  const url = document.getElementById('linkUrl').textContent;
+  const ta = document.createElement('textarea');
+  ta.value = url;
+  ta.style.position = 'fixed';
+  ta.style.opacity = '0';
+  document.body.appendChild(ta);
+  ta.focus(); ta.select();
+  try {
+    document.execCommand('copy');
+    const btn = document.getElementById('copyBtn');
+    btn.textContent = '복사됨!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = '복사'; btn.classList.remove('copied'); }, 2000);
+  } catch(e) { showToast('수동으로 복사해주세요'); }
+  document.body.removeChild(ta);
+}
+
+(function loadFromHash() {
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const d = params.get('d');
+    if (!d) return;
+    const data = JSON.parse(decodeURIComponent(escape(atob(d))));
+    if (data.name) document.getElementById('inp-name').value = data.name;
+    if (data.age) document.getElementById('inp-age').value = data.age;
+    if (data.gender) document.getElementById('inp-gender').value = data.gender;
+    if (data.ability) document.getElementById('inp-ability').value = data.ability;
+    if (data.body) document.getElementById('inp-body').value = data.body;
+    if (data.code) document.getElementById('codeDisplay').textContent = data.code;
+    if (data.date) document.getElementById('footerDate').textContent = 'PPR · ' + data.date + ' · REGISTERED';
+  } catch(e) {}
+})();
+</script>
